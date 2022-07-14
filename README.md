@@ -6,3 +6,4 @@
 * glm
 * stbi
 * glad
+* freetype
