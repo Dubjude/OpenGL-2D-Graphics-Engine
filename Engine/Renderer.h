@@ -2,9 +2,6 @@
 
 #include "utility.h"
 #include "Geometry.h"
-#include "VAO.h"
-#include "VBO.h"
-#include "EBO.h"
 #include "Texture.h"
 #include "Text.h"
 
@@ -218,6 +215,11 @@ namespace mem
 			return get().IloadTexture(path);
 		}
 
+		static Ref<Texture> loadTexture(const Image& image)
+		{
+			return get().IloadTexture(image);
+		}
+
 		static void drawTexture(const Ref<Texture>& texture, const Rect& rect)
 		{
 			get().IdrawTexture(texture, rect, glm::vec4(255));
@@ -257,7 +259,12 @@ namespace mem
 
 		static Ref<Font> defaultFont(const std::string& name, uint32_t fontSize)
 		{
-			return get().IloadFont(get().fontShortcuts[name], fontSize);
+			return get().IloadFont(get().m_FontShortcuts[name], fontSize);
+		}
+
+		static void drawText(const Ref<Font>& font, const std::string& text, const glm::vec2& pos, const glm::vec4& color)
+		{
+			get().IdrawText(font, text, pos, color);
 		}
 
 		// u got no friends
@@ -271,7 +278,7 @@ namespace mem
 		static Renderer& get() { return s_Instance; }
 
 		// for fots so ur life easier
-		std::unordered_map<std::string, std::string> fontShortcuts = {
+		std::unordered_map<std::string, std::string> m_FontShortcuts = {
 			{"Arial","../Fonts/arial.ttf"},
 			{"FreeSans","../Fonts/FreeSans.ttf"},
 			{"Sans Serif","../Fonts/SansSerif.ttf"},
@@ -296,9 +303,11 @@ namespace mem
 		void IdrawBezier(const glm::vec4& color, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, float width);
 		void IdrawBezier(const glm::vec4& color, const glm::vec2& p1, const glm::vec2& p2, const glm::vec2& p3, const glm::vec2& p4, float width);
 		Ref<Texture> IloadTexture(const std::string& path);
+		Ref<Texture> IloadTexture(const Image& image);
 		void IdrawTexture(const Ref<Texture>& texture, const Rect& rect, const glm::vec4& color);
 		void IdrawTexture(const Ref<Texture>& texture, const PolyRect& rect, const glm::vec4& color); 
 		Ref<Font> IloadFont(const std::string& path, uint32_t fontSize); 
+		void IdrawText(const Ref<Font>& font, const std::string& text, const glm::vec2& pos, const glm::vec4& color);
 
 		// utility
 		void refreshBuffers();

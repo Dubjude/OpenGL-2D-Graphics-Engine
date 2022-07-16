@@ -60,6 +60,10 @@ namespace mem
 		glm::vec3 goodColor = colorToNormal(color);
 		glClearColor(goodColor.r, goodColor.g, goodColor.b, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_Triangles.draw();
+		m_Circles.draw();
+		m_Textures.draw();
 	}
 
 	uint32_t Renderer::IgetFPS()
@@ -87,9 +91,9 @@ namespace mem
 
 		refreshBuffers();
 
-		m_Triangles.draw();
+		/*m_Triangles.draw();
 		m_Circles.draw();
-		m_Textures.draw();
+		m_Textures.draw();*/
 
 		glfwSwapBuffers(m_Window.window);
 		glfwPollEvents();
@@ -289,6 +293,13 @@ namespace mem
 		return temp;
 	}
 
+	Ref<Texture> Renderer::IloadTexture(const Image& image)
+	{
+		Ref<Texture> temp = std::make_shared<Texture>(image, GL_TEXTURE_2D, m_Textures.getSlot(), GL_RGBA, GL_UNSIGNED_BYTE);
+		m_Textures.addTexture(temp);
+		return temp;
+	}
+
 	void Renderer::IdrawTexture(const Ref<Texture>& texture, const Rect& rect, const glm::vec4& color)
 	{
 		float _ax = map(rect.x, 0.0f, m_Window.width, -1.0f, 1.0f);
@@ -322,5 +333,10 @@ namespace mem
 		Ref<Font> font = std::make_shared<Font>(face, fontSize, m_Window.height);
 		FT_Done_FreeType(ft);
 		return font;
+	}
+
+	void Renderer::IdrawText(const Ref<Font>& font, const std::string& text, const glm::vec2& pos, const glm::vec4& color)
+	{
+		font->draw(text, pos, 1.0f, colorToNormal(color));
 	}
 }
