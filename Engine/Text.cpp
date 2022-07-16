@@ -18,7 +18,7 @@ namespace mem
 				continue;
 			}
 			// generate texture
-			unsigned int texture;
+			uint32_t texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexImage2D(
@@ -67,7 +67,7 @@ namespace mem
 
 		// activate corresponding render state	
 		m_ShaderProgram.Activate();
-		m_ShaderProgram.setVec3v("textColor", color);
+		m_ShaderProgram.setVec4v("textColor", color);
 		m_ShaderProgram.setMat4("projection", projection);
 		glActiveTexture(GL_TEXTURE0);
 		glBindVertexArray(m_VAO);
