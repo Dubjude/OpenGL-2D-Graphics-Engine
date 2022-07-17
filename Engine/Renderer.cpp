@@ -8,6 +8,8 @@ namespace mem
 		m_Window.height = height;
 		m_Window.title = title;
 
+		srand(time(0));
+
 		if (!glfwInit()) 
 		{
 			print("Could not init OpenGL library");
@@ -97,6 +99,18 @@ namespace mem
 
 		glfwSwapBuffers(m_Window.window);
 		glfwPollEvents();
+	}
+
+	void Renderer::IdrawPixel(const glm::vec3& color, const glm::vec2& pos)
+	{
+		glm::vec3 _color = colorToNormal(color);
+
+		glEnable(GL_SCISSOR_TEST);
+		glScissor(pos.x, m_Window.height - pos.y, 1, 1);
+		glClearColor(_color.x, _color.y, _color.z, 1);
+		glClear(GL_COLOR_BUFFER_BIT);
+		// Remember to disable scissor test, or, perhaps reset the scissor rectangle:
+		glDisable(GL_SCISSOR_TEST);
 	}
 
 	void Renderer::refreshBuffers()

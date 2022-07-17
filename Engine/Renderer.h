@@ -61,6 +61,13 @@ namespace mem
 			get().IdrawTriangle(color, a, b, c);
 		}*/
 
+		/*                         PIXELS                           */
+
+		static void drawPixel(const glm::vec3& color, const glm::vec2& pos)
+		{
+			get().IdrawPixel(color, pos);
+		}
+
 		/*                         POLYGON                          */
 
 		static void drawPolygon(const glm::vec4& color, const std::vector<glm::vec2>& points)
@@ -295,6 +302,7 @@ namespace mem
 		uint32_t IgetFPS();
 		glm::vec2 IgetMousePos();
 		void Iupdate();
+		void IdrawPixel(const glm::vec3& color, const glm::vec2& pos);
 		void IdrawTriangle(const glm::vec4& color, const glm::vec2& a, const glm::vec2& b, const glm::vec2& c);
 		void IdrawFilledPolygon(const glm::vec4& color, const std::vector<glm::vec2>& points);
 		void IdrawPolygon(const glm::vec4& color, const std::vector<glm::vec2>& points, float width, bool rounded);

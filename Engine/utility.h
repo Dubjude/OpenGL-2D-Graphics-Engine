@@ -136,6 +136,21 @@ namespace mem
 		return map(signbit(n), 0.f, 1.f, -1.f, 1.f);
 	}
 
+	namespace Random
+	{
+		inline int32_t Int(int32_t range) { return (int32_t)(((float)rand() / (float)RAND_MAX) * range); }
+		inline float Float(float range) { return ((float)rand() / (float)RAND_MAX) * range; }
+
+		inline glm::ivec2 IVec2(int32_t range) { return glm::ivec2(Int(range), Int(range)); }
+		inline glm::vec2 Vec2(float range) { return glm::vec2(Float(range), Float(range)); }
+
+		inline glm::ivec3 IVec3(int32_t range) { return glm::ivec3(Int(range), Int(range), Int(range)); }
+		inline glm::vec3 Vec3(float range) { return glm::vec3(Float(range), Float(range), Float(range)); }
+
+		inline glm::ivec4 IVec4(int32_t range) { return glm::ivec4(Int(range), Int(range), Int(range), Int(range)); }
+		inline glm::vec4 Vec4(float range) { return glm::vec4(Float(range), Float(range), Float(range), Float(range)); }
+	}
+
 	// utility classes
 
 	struct Rect
