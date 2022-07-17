@@ -5,8 +5,6 @@
 #include "Texture.h"
 #include "Text.h"
 
-#define initRenderer() mem::Renderer mem::Renderer::s_Instance;
-
 namespace mem
 {
 	struct Window
@@ -27,8 +25,6 @@ namespace mem
 	class Renderer
 	{
 	public:
-		FT_Library ft;
-
 		/*                       WINDOW STUFF                       */
 
 		static void createWindow(uint32_t width, uint32_t height, const char* title) 
@@ -275,15 +271,21 @@ namespace mem
 		Renderer() {}
 		~Renderer() {}
 		static Renderer s_Instance;
-		static Renderer& get() { return s_Instance; }
+		static Renderer& get() 
+		{ 
+			static Renderer s_Instance;
+			return s_Instance; 
+		}
 
-		// for fots so ur life easier
+		// for fonts so ur life easier
 		std::unordered_map<std::string, std::string> m_FontShortcuts = {
 			{"Arial","../Fonts/arial.ttf"},
 			{"FreeSans","../Fonts/FreeSans.ttf"},
 			{"Sans Serif","../Fonts/SansSerif.ttf"},
 			{"ComicSans","../Fonts/comicsansms3.ttf"}
 		};
+
+		FT_Library ft;
 
 		// private stuff
 		void IcreateWindow(uint32_t width, uint32_t height, const char* title);
