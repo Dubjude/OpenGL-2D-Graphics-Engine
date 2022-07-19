@@ -27,6 +27,7 @@ namespace mem
 	public:
 		/*                       WINDOW STUFF                       */
 
+		// initialises library and creates window
 		static void createWindow(uint32_t width, uint32_t height, const char* title) 
 		{ 
 			get().IcreateWindow(width, height, title); 
