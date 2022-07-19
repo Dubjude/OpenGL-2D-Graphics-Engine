@@ -138,6 +138,8 @@ namespace mem
 
 	namespace Random
 	{
+		inline void init() { srand(time(0)); }
+
 		inline int32_t Int(int32_t range) { return (int32_t)(((float)rand() / (float)RAND_MAX) * range); }
 		inline float Float(float range) { return ((float)rand() / (float)RAND_MAX) * range; }
 

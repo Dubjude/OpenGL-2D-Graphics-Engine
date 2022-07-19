@@ -8,7 +8,8 @@ namespace mem
 		m_Window.height = height;
 		m_Window.title = title;
 
-		srand(time(0));
+		//srand(time(0));
+		Random::init();
 
 		if (!glfwInit()) 
 		{
