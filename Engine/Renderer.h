@@ -45,6 +45,9 @@ namespace mem
 
 		static uint32_t getFPS() { return get().IgetFPS(); }
 		static glm::vec2 getMousePos() { return get().IgetMousePos(); }
+		static uint32_t getWindowWidth() { return get().m_Window.width; }
+		static uint32_t getWindowHeight() { return get().m_Window.height; }
+		static float getWindowAspectRatio() { return get().m_Window.aspectRatio(); }
 		static bool getKeyDown(int32_t key) { return glfwGetKey(get().m_Window.window, key) == GLFW_PRESS; };
 		static bool getKeyUp(int32_t key) { return glfwGetKey(get().m_Window.window, key) == GLFW_RELEASE; };
 		static bool getMouseButtonDown(int32_t key) { return  glfwGetMouseButton(get().m_Window.window, key) == GLFW_PRESS; };
