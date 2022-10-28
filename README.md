@@ -1,4 +1,4 @@
-# OpenGL-2D-Engine
+# OpenGL-2D-Graphics-Engine (mem)
 
 ## Project uses:
 * GLFW3
