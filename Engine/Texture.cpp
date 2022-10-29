@@ -26,7 +26,7 @@ namespace mem
 		}
 		else
 		{
-			print("Failed to load texture");
+			ERROR("Failed to load texture");
 		}
 		stbi_image_free(data);
 

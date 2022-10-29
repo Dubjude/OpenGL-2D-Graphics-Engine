@@ -13,13 +13,13 @@ namespace mem
 
 		if (!glfwInit()) 
 		{
-			print("Could not init OpenGL library");
+			ERROR("Could not init OpenGL library");
 			throw std::exception("Could not init OpenGL library");
 		}
 
 		if (FT_Init_FreeType(&ft))
 		{
-			print("Could not init freetype library");
+			ERROR("Could not init freetype library");
 			throw std::exception("Could not init freetype library");
 		}
 

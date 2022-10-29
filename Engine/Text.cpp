@@ -14,7 +14,7 @@ namespace mem
 			// load character glyph 
 			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				print("Failed to load Glyph");
+				ERROR("Failed to load Glyph");
 				continue;
 			}
 			// generate texture

@@ -13,6 +13,12 @@
 #include <unordered_map>
 #include <cerrno>
 
+// time stuff
+#include <ctime>
+#include <time.h>
+#include <iomanip>
+
+// OpenGL and graphics stuff 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stb/stb_image.h>
@@ -21,63 +27,208 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+// fonts
 #include <ft2build.h>
 #include <freetype/freetype.h>
 
-#define PI 3.1415926f
-#define TWO_PI 2.0f * PI
-#define E 2.7182818f
+
+// logging setting
+#define MEM_LOGGING_ACTIVE	1
+#define MEM_LOG_TO_FILE		0
+
+// constants
+#define PI		3.1415926f
+#define TWO_PI	2.0f * PI
+#define E		2.7182818f
 
 // ------------------------------------ LOGGING
 
-inline void print()
-{
-	std::cout << std::endl;
-}
+#define MEM_RESET		"\033[0m"
+#define MEM_BLACK		"\033[30m"			   /*  Black			*/
+#define MEM_RED			"\033[31m"			   /*  Red				*/
+#define MEM_GREEN		"\033[32m"			   /*  Green			*/
+#define MEM_YELLOW		"\033[33m"			   /*  Yellow			*/
+#define MEM_BLUE		"\033[34m"			   /*  Blue				*/
+#define MEM_MAGENTA		"\033[35m"			   /*  Magenta			*/
+#define MEM_CYAN		"\033[36m"			   /*  Cyan				*/
+#define MEM_WHITE		"\033[37m"			   /*  White			*/
+#define MEM_BOLDBLACK   "\033[1m\033[30m"      /*  Bold Black		*/
+#define MEM_BOLDRED     "\033[1m\033[31m"      /*  Bold Red			*/
+#define MEM_BOLDGREEN   "\033[1m\033[32m"      /*  Bold Green		*/
+#define MEM_BOLDYELLOW  "\033[1m\033[33m"      /*  Bold Yellow		*/
+#define MEM_BOLDBLUE    "\033[1m\033[34m"      /*  Bold Blue		*/
+#define MEM_BOLDMAGENTA "\033[1m\033[35m"      /*  Bold Magenta		*/
+#define MEM_BOLDCYAN    "\033[1m\033[36m"      /*  Bold Cyan		*/
+#define MEM_BOLDWHITE   "\033[1m\033[37m"      /*  Bold White		*/
 
-// no return
-template <typename T>
-inline void printnr(const T& x)
+namespace mem
 {
-	std::cout << x;
-}
-
-template <typename T>
-inline void print(const T& x)
-{
-	std::cout << x << std::endl;
-}
-
-inline void print(const glm::vec2& v)
-{
-	std::cout << "X: " << v.x << ", " << "Y: " << v.y << std::endl;
-}
-
-inline void print(const glm::vec3& v)
-{
-	std::cout << "X: " << v.x << ", " << "Y: " << v.y << ", " << "Z: " << v.z << std::endl;
-}
-
-inline void print(const glm::vec4& v)
-{
-	std::cout << "R: " << v.r << ", " << "G: " << v.g << ", " << "B: " << v.b << ", " << "A: " << v.a << std::endl;
-}
-
-template <typename T>
-inline void print(const std::vector<T>& v)
-{
-	for (T obj : v)
+	class FileLogger
 	{
-		printnr(obj);
+	public:
+		FileLogger() = default;
+
+		// path to folder
+		FileLogger(const std::string& filePath)
+		{
+			m_Log = std::ofstream(filePath + "/Log.txt");
+		}
+
+		~FileLogger()
+		{
+			m_Log.close();
+		}
+
+		void Print()
+		{
+			m_Log << "\n";
+		}
+
+		template <typename T>
+		void Print(const T& x)
+		{
+			m_Log << x << "\n";
+		}
+
+		template <typename T>
+		void Printnr(const T& x)
+		{
+			m_Log << x;
+		}
+
+		void Print(const glm::vec2& v)
+		{
+			std::cout << "X: " << v.x << ", " << "Y: " << v.y << "\n";
+		}
+
+		void Print(const glm::vec3& v)
+		{
+			std::cout << "X: " << v.x << ", " << "Y: " << v.y << ", " << "Z: " << v.z << "\n";
+		}
+
+		void Print(const glm::vec4& v)
+		{
+			std::cout << "R: " << v.r << ", " << "G: " << v.g << ", " << "B: " << v.b << ", " << "A: " << v.a << "\n";
+		}
+
+		template <typename T>
+		void Print(const std::vector<T>& v)
+		{
+			Printnr("{ ");
+			for (T obj : v)
+			{
+				Printnr(obj);
+				Printnr(", ");
+			}
+			Printnr(" }");
+		}
+
+		void PrintCurrentTime()
+		{
+			struct tm buf;
+			time_t now = time(0);
+			localtime_s(&buf, &now);
+			m_Log << std::put_time(&buf, "(%Y-%m-%d %X)");
+		}
+
+		void StartLine()
+		{
+			m_Log << m_LineCount << " ";
+			m_LineCount++;
+		}
+
+	private:
+		std::ofstream m_Log;
+		uint32_t m_LineCount = 0;
+	};
+}
+
+#if MEM_LOGGING_ACTIVE
+	#if MEM_LOG_TO_FILE
+		static mem::FileLogger fLogger("../../OpenGL 2D Engine");
+		#define LOG(x) fLogger.StartLine(); fLogger.Print(x)
+		#define INFO(x) fLogger.StartLine(); fLogger.PrintCurrentTime(); fLogger.Printnr(" INFO: "); fLogger.Print(x)
+		#define WARNING(x) fLogger.StartLine(); fLogger.PrintCurrentTime(); fLogger.Printnr(" WARNING: "); fLogger.Print(x)
+		#define ERROR(x) fLogger.StartLine(); fLogger.PrintCurrentTime(); fLogger.Printnr(" ERROR: "); fLogger.Print(x)
+		#define FATAL(x) fLogger.StartLine(); fLogger.PrintCurrentTime(); fLogger.Printnr(" FATAL ERROR: "); fLogger.Print(x)
+	#else
+		#define LOG(x) std::cout << MEM_WHITE; mem::print(x)
+		#define INFO(x) std::cout << MEM_GREEN; mem::printCurrentTime(); mem::printnr(" INFO: "); mem::print(x)
+		#define WARNING(x) std::cout << MEM_YELLOW; mem::printCurrentTime(); mem::printnr(" WARNING: "); mem::print(x)
+		#define ERROR(x) std::cout << MEM_RED; mem::printCurrentTime(); mem::printnr(" ERROR: "); mem::print(x)
+		#define FATAL(x) std::cout << MEM_BOLDRED; mem::printCurrentTime(); mem::printnr(" FATAL ERROR: "); mem::print(x)
+	#endif // MEM_LOG_TO_FILE
+#else
+	#define LOG(x)
+	#define INFO(x)
+	#define WARNING(x)
+	#define ERROR(x)
+	#define FATAL(x)
+#endif // MEM_LOGGING_ACTIVE
+
+namespace mem
+{
+	// only logging stuff 
+
+	inline void print()
+	{
+		std::cout << "\n";
+	}
+
+	// no line return
+	template <typename T>
+	inline void printnr(const T& x)
+	{
+		std::cout << x;
+	}
+
+	template <typename T>
+	inline void print(const T& x)
+	{
+		std::cout << x << "\n";
+	}
+
+	inline void print(const glm::vec2& v)
+	{
+		std::cout << "X: " << v.x << ", " << "Y: " << v.y << "\n";
+	}
+
+	inline void print(const glm::vec3& v)
+	{
+		std::cout << "X: " << v.x << ", " << "Y: " << v.y << ", " << "Z: " << v.z << "\n";
+	}
+
+	inline void print(const glm::vec4& v)
+	{
+		std::cout << "R: " << v.r << ", " << "G: " << v.g << ", " << "B: " << v.b << ", " << "A: " << v.a << "\n";
+	}
+
+	template <typename T>
+	inline void print(const std::vector<T>& v)
+	{
+		printnr("{ ");
+		for (T obj : v)
+		{
+			printnr(obj);
+			printnr(", ");
+		}
+		printnr(" }");
+	}
+
+	inline void printCurrentTime()
+	{
+		struct tm buf;
+		time_t now = time(0);
+		localtime_s(&buf, &now);
+		printnr(std::put_time(&buf, "(%Y-%m-%d %X)"));
 	}
 }
 
 namespace mem
 {
-	// might be useful later
+	// for easier typing
 	template<typename T>
 	using Scope = std::unique_ptr<T>;
-
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
 
@@ -103,12 +254,12 @@ namespace mem
 	{
 		return (1 - t) * v0 + t * v1;
 	}
-	// linear interpolation
+	// linear interpolation for vec2
 	inline glm::vec2 lerp(const glm::vec2& v0, const glm::vec2& v1, float t)
 	{
 		return glm::vec2(lerp(v0.x, v1.x, t), lerp(v0.y, v1.y, t));
 	}
-	// linear interpolation
+	// linear interpolation for vec3
 	inline glm::vec3 lerp(const glm::vec3& v0, const glm::vec3& v1, float t)
 	{
 		return glm::vec3(lerp(v0.x, v1.x, t), lerp(v0.y, v1.y, t), lerp(v0.z, v1.z, t));
@@ -120,12 +271,12 @@ namespace mem
 		float t2 = (1 - cos(t * PI)) / 2;
 		return(v0 * (1 - t2) + v1 * t2);
 	}
-	// cosine interpolation
+	// cosine interpolation for vec2
 	inline glm::vec2 coserp(const glm::vec2& v0, const glm::vec2& v1, float t)
 	{
 		return glm::vec2(coserp(v0.x, v1.x, t), coserp(v0.y, v1.y, t));
 	}
-	// cosine interpolation
+	// cosine interpolation for vec3
 	inline glm::vec3 coserp(const glm::vec3& v0, const glm::vec3& v1, float t)
 	{
 		return glm::vec3(coserp(v0.x, v1.x, t), coserp(v0.y, v1.y, t), coserp(v0.z, v1.z, t));
@@ -271,7 +422,7 @@ namespace mem
 		}
 		default:
 		{
-			print("Center must be specified");
+			ERROR("Center must be specified");
 			return PolyRect();
 		}
 		}

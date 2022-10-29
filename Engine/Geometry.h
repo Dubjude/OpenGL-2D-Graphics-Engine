@@ -39,7 +39,7 @@ namespace mem
 		virtual void refreshBuffers() override;
 		void addVertex(const glm::vec2& pos, const glm::vec4& color);
 
-	private:
+	protected:
 		VAO m_VAO;
 		Shader m_ShaderProgram;
 		std::vector<float> m_Vertices;
@@ -56,7 +56,7 @@ namespace mem
 		virtual void refreshBuffers() override;
 		void addVertex(const glm::vec2& pos, const glm::vec2& center, float radius, const glm::vec4& color, float innerRadius, float ratio, float radiusRatio);
 
-	private:
+	protected:
 		VAO m_VAO;
 		Shader m_ShaderProgram;
 		std::vector<float> m_Vertices;
@@ -77,7 +77,7 @@ namespace mem
 		void addTexture(const Ref<Texture>& texture);
 		uint32_t getSlot() { return m_TexSlot; }
 
-	private:
+	protected:
 		VAO m_VAO;
 		Shader m_ShaderProgram;
 		std::vector<float> m_Vertices;
